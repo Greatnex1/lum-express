@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Builder
+@ToString
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

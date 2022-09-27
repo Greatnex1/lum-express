@@ -13,7 +13,6 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerRegistrationRequest {
-
     private String country;
     private String password;
     private String email;
