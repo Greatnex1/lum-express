@@ -11,5 +11,5 @@ import javax.persistence.Id;
 
 public enum Category {
 
-    FASHION,ELECTRONICS, FOOD, SPORT, GAMES
+    FASHION,ELECTRONICS, FOOD, SPORT, GAMES,BEVERAGES
 }

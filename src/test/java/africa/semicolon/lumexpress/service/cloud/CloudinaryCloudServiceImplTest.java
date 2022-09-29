@@ -1,0 +1,49 @@
+package africa.semicolon.lumexpress.service.cloud;
+
+import com.cloudinary.utils.ObjectUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+@SpringBootTest
+class CloudinaryCloudServiceImplTest {
+    @Autowired
+    private CloudService cloudService;
+
+    private MultipartFile file;
+
+    @BeforeEach
+    void setUp() throws IOException {
+       Path path = Paths.get("src/main/resources/image/milky.jpeg");
+        file = new MockMultipartFile("loyal", Files.readAllBytes(path));
+    }
+
+    @Test
+    @DisplayName("cloudinary upload test")
+    void cloudinaryUploadTest() {
+
+        try {
+            String response = cloudService.upload(file.getBytes(), ObjectUtils.emptyMap());
+
+            assertThat(response).isNotNull();
+        } catch (IOException err) {
+            err.printStackTrace();
+        }
+    catch (Exception exe) {
+           throw new RuntimeException(exe);
+      }
+    }
+
+    }
+
