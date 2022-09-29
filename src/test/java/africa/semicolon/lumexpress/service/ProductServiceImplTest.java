@@ -1,9 +1,11 @@
 package africa.semicolon.lumexpress.service;
 
 import africa.semicolon.lumexpress.data.dto.request.AddProductRequest;
+import africa.semicolon.lumexpress.data.dto.request.GetAllItemRequest;
 import africa.semicolon.lumexpress.data.dto.response.AddProductResponse;
 import africa.semicolon.lumexpress.data.models.Product;
 import africa.semicolon.lumexpress.exception.ProductNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Slf4j
 class ProductServiceImplTest {
 @Autowired
 private ProductService productService;
@@ -38,7 +41,7 @@ private AddProductRequest request;
         .productCategory("BEVERAGES")
                 .price(BigDecimal.valueOf(30.00))
                 .quantity(10)
-                 //.image(file)
+                .image(file)
                 .build();
     }
 
@@ -69,10 +72,23 @@ private AddProductRequest request;
     @Test
     void getAllProducts() throws IOException {
         productService.create(request);
-        Page <Product> productPage = productService.getAllProducts();
+        var getItemsRequest   = buildGetItemRequest();
+        Page<Product> productPage =  productService.getAllProducts(getItemsRequest);
+        log.info("page  contents  ::{}", productPage);
+        assertThat(productPage).isNotNull();
         assertThat(productPage.getTotalElements()).isGreaterThan(0);
+//        Page <Product> productPage = productService.getAllProducts();
+//        assertThat(productPage.getTotalElements()).isGreaterThan(0);
 
     }
+
+    private GetAllItemRequest buildGetItemRequest() {
+        return GetAllItemRequest.builder().
+                numberOfProductPerPage(8)
+                        .pageNumber(1)
+                .  build();
+    }
+
     @Test
     void  deleteProduct(){
 

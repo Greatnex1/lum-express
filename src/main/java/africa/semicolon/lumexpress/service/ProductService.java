@@ -1,6 +1,7 @@
 package africa.semicolon.lumexpress.service;
 
 import africa.semicolon.lumexpress.data.dto.request.AddProductRequest;
+import africa.semicolon.lumexpress.data.dto.request.GetAllItemRequest;
 import africa.semicolon.lumexpress.data.dto.request.UpdateProductRequest;
 import africa.semicolon.lumexpress.data.dto.response.AddProductResponse;
 import africa.semicolon.lumexpress.data.models.Product;
@@ -14,8 +15,11 @@ public interface ProductService {
     AddProductResponse create(AddProductRequest createProductRequest) throws  IOException;
     String updateProductDetails(UpdateProductRequest updateProductRequest);
     Product getProductById(Long id) throws ProductNotFoundException;
+    Page<Product> getAllProducts(GetAllItemRequest  getAllItemRequest);
+
     Page<Product> getAllProducts();
-    Product deleteProduct(Long  id);
+
+    String deleteProduct(Long  id);
 
 
 }
