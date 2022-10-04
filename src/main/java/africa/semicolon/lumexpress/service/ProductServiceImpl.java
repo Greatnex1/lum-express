@@ -4,6 +4,7 @@ import africa.semicolon.lumexpress.data.dto.request.AddProductRequest;
 import africa.semicolon.lumexpress.data.dto.request.GetAllItemRequest;
 import africa.semicolon.lumexpress.data.dto.request.UpdateProductRequest;
 import africa.semicolon.lumexpress.data.dto.response.AddProductResponse;
+import africa.semicolon.lumexpress.data.dto.response.UpdateProductResponse;
 import africa.semicolon.lumexpress.data.models.Category;
 import africa.semicolon.lumexpress.data.models.Product;
 import africa.semicolon.lumexpress.exception.ProductNotFoundException;
@@ -49,8 +50,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public String updateProductDetails(UpdateProductRequest updateProductRequest) {
-        return null;
+    public UpdateProductResponse updateProductDetails(UpdateProductRequest updateProductRequest) throws ProductNotFoundException {
+        var foundProduct  =   productRepository.findById(updateProductRequest.getId()).orElseThrow(
+                () ->   new ProductNotFoundException(String.format( "product with id %d  not found", updateProductRequest.getId()))
+        );
+        foundProduct.setName("");
+                return null;
     }
 
     @Override
@@ -76,9 +81,6 @@ public class ProductServiceImpl implements ProductService {
         return products;
 
     }
-
-
-
     @Override
     public Page<Product> getAllProducts() {
 
@@ -90,6 +92,6 @@ public class ProductServiceImpl implements ProductService {
 
    @Override
     public String deleteProduct(Long id) {
-        return null;
+       return null;
     }
 }

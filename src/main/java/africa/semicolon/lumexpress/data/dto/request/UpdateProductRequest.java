@@ -1,20 +1,18 @@
 package africa.semicolon.lumexpress.data.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.math.BigDecimal;
 
 
 @AllArgsConstructor
-//@NoArgsConstructor
 @Setter
 @Getter
-
+@Builder
+@NoArgsConstructor
 public class UpdateProductRequest {
-
-//    private Long id;
-//    private int code;
-//    private String message;
-
+    private Long id;
+private BigDecimal price;
+private int quantity;
+private String  description;
 }

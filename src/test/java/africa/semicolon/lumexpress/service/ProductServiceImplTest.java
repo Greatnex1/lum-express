@@ -2,6 +2,7 @@ package africa.semicolon.lumexpress.service;
 
 import africa.semicolon.lumexpress.data.dto.request.AddProductRequest;
 import africa.semicolon.lumexpress.data.dto.request.GetAllItemRequest;
+import africa.semicolon.lumexpress.data.dto.request.UpdateProductRequest;
 import africa.semicolon.lumexpress.data.dto.response.AddProductResponse;
 import africa.semicolon.lumexpress.data.models.Product;
 import africa.semicolon.lumexpress.exception.ProductNotFoundException;
@@ -30,6 +31,8 @@ private ProductService productService;
 
 private AddProductRequest request;
 
+private AddProductResponse response;
+
 
     @BeforeEach
     void setUp() throws IOException {
@@ -43,11 +46,12 @@ private AddProductRequest request;
                 .quantity(10)
                 .image(file)
                 .build();
+        response = productService.create(request);
     }
 
     @Test
-    void addProduct() throws ProductNotFoundException, IOException {
-        AddProductResponse response = productService.create(request);
+    void addProduct() throws IOException {
+      //AddProductResponse response = productService.create(request);
       assertThat(response).isNotNull();
       assertThat(response.getProductId()).isGreaterThan(0);
       assertThat(response.getMessage()).isNotNull();
@@ -58,12 +62,22 @@ private AddProductRequest request;
 
 
     @Test
-    void updateProductDetails() {
+    void updateProductDetails() throws ProductNotFoundException {
+        UpdateProductRequest  updateProductRequest  = UpdateProductRequest
+                .builder()
+                .id(1L)
+                .price(BigDecimal.valueOf(300.00))
+                .description("nourishing and satisfying")
+                .quantity(2)
+                .build();
+       var updateResponse = productService.updateProductDetails(updateProductRequest);
+       assertThat(updateResponse).isNotNull();
+       assertThat(updateResponse.getStatusCode()).isEqualTo(201);
     }
 
     @Test
     void getProductById() throws ProductNotFoundException, IOException {
-        AddProductResponse response = productService.create(request);
+      //  AddProductResponse response = productService.create(request);
         Product foundProduct = productService.getProductById(response.getProductId());
         assertThat(foundProduct).isNotNull();
         assertThat(foundProduct.getId()).isEqualTo(response.getProductId());
@@ -76,9 +90,8 @@ private AddProductRequest request;
         Page<Product> productPage =  productService.getAllProducts(getItemsRequest);
         log.info("page  contents  ::{}", productPage);
         assertThat(productPage).isNotNull();
-        assertThat(productPage.getTotalElements()).isGreaterThan(0);
-//        Page <Product> productPage = productService.getAllProducts();
-//        assertThat(productPage.getTotalElements()).isGreaterThan(0);
+        assertThat(productPage.getTotalElements()).isGreaterThan(0L);
+
 
     }
 
@@ -91,6 +104,7 @@ private AddProductRequest request;
 
     @Test
     void  deleteProduct(){
+    //    assertThat(productService).isNotNull();
 
     }
 }
