@@ -11,6 +11,11 @@ import africa.semicolon.lumexpress.exception.ProductNotFoundException;
 import africa.semicolon.lumexpress.repository.ProductRepository;
 import africa.semicolon.lumexpress.service.cloud.CloudService;
 import com.cloudinary.utils.ObjectUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -26,72 +31,86 @@ import java.io.IOException;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-    private final ModelMapper mapper = new ModelMapper();
+    private final ModelMapper mapper;
 
     private final CloudService cloudService;
+    private ObjectMapper oMapper;
 
     @Override
     public AddProductResponse create(AddProductRequest createProductRequest) throws IOException {
-        Product product = mapper.map(createProductRequest, Product.class);
+        Product  product = mapper.map(createProductRequest, Product.class);
         product.getCategories().add(Category.valueOf(createProductRequest.getProductCategory().toUpperCase()));
-        var imageUrl = cloudService.upload(createProductRequest.getImage().getBytes(), ObjectUtils.emptyMap());
-        product.setImage(imageUrl);
+       var imageUrl =   cloudService.upload(createProductRequest.getImage().getBytes(),ObjectUtils.emptyMap());
+        product.setImageUrl(imageUrl);
         var savedProduct = productRepository.save(product);
         log.info("cloudinary image url :: {}", imageUrl);
+        log.info("product saved to db::{}", savedProduct);
         return buildCreateProductResponse(savedProduct);
     }
 
     private AddProductResponse buildCreateProductResponse(Product savedProduct) {
-        return AddProductResponse.builder()
-                .code(201)
+        return AddProductResponse
+                .builder()
                 .productId(savedProduct.getId())
-                .message("product added successfully")
+                .code(201)
+                .message(savedProduct.getName() + "added products")
                 .build();
     }
 
     @Override
-    public UpdateProductResponse updateProductDetails(UpdateProductRequest updateProductRequest) throws ProductNotFoundException {
-        var foundProduct  =   productRepository.findById(updateProductRequest.getId()).orElseThrow(
-                () ->   new ProductNotFoundException(String.format( "product with id %d  not found", updateProductRequest.getId()))
-        );
-        foundProduct.setName("");
-                return null;
+    public UpdateProductResponse updateProductDetails(Long productId, JsonPatch patch) throws ProductNotFoundException {
+        var foundProduct =   productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(
+                String.format("product with id %d not found", productId)
+
+        ));
+//        foundProduct.setPrice(productId);
+//        foundProduct.setQuantity(productId);
+        Product updateProduct = applyPatchToProduct(patch, foundProduct);
+        var savedProduct = productRepository.save(updateProduct);
+        return  buildUpdateResponse(savedProduct);
+    }
+
+    private UpdateProductResponse buildUpdateResponse(Product savedProduct) {
+        return UpdateProductResponse
+                .builder()
+                .productName(savedProduct.getName())
+                .price(savedProduct.getPrice())
+                .statusCode(200)
+                .message("updated successfully")
+                .build();
+
+
+    }
+
+    private Product applyPatchToProduct(JsonPatch patch, Product foundProduct) {
+        JsonNode productNode = oMapper.convertValue(foundProduct,JsonNode.class);
+        JsonNode patchedProductNode;
+        try{
+            patchedProductNode = patch.apply(productNode);
+            return oMapper.readValue(oMapper.writeValueAsString(patchedProductNode),
+                    Product.class);
+        }catch(JsonPatchException|IOException  err){
+            err.printStackTrace();
+            return  foundProduct;
+        }
+
     }
 
     @Override
     public Product getProductById(Long id) throws ProductNotFoundException {
-        //
-        //  if (foundProduct.isPresent()) return foundProduct.get();
-        //  throw new ProductNotFoundException(
-        //        String.format("product with id %d not found", id)
-        //  );
-
-        return productRepository.findById(id).orElseThrow(
-                () -> new ProductNotFoundException(
-                        String.format("product with id %d not found", id)));
-
-
+        return productRepository.findById(id).orElseThrow(() ->
+                new ProductNotFoundException(String.format("product with id %d not found", id)));
     }
 
     @Override
     public Page<Product> getAllProducts(GetAllItemRequest getAllItemRequest) {
-        Pageable pageSpecs = PageRequest.of(getAllItemRequest.getPageNumber(), getAllItemRequest.getNumberOfProductPerPage());
-        Page<Product> products = productRepository.findAll(pageSpecs);
-
-        return products;
-
+        Pageable pageSpecs = PageRequest.of(getAllItemRequest.getPageNumber() -1,getAllItemRequest.getNumberOfProductPerPage());
+        return productRepository.findAll(pageSpecs);
     }
+
     @Override
-    public Page<Product> getAllProducts() {
-
-        Pageable pageSpecs = PageRequest.of(0, 5);
-        productRepository.findAll(pageSpecs);
-
+    public String deleteProduct(Long id) {
         return null;
     }
-
-   @Override
-    public String deleteProduct(Long id) {
-       return null;
-    }
 }
+
