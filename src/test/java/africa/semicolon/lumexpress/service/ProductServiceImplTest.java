@@ -134,12 +134,15 @@ private AddProductResponse response;
     }
 
 
-    private UpdateProductRequest buildUpdateRequest() {
+   /* private UpdateProductRequest buildUpdateRequest() {
         return UpdateProductRequest.builder()
                 .price(BigDecimal.valueOf(40.00))
                 .productId(1L)
                 .description("its just milo")
                 .quantity(10)
                 .build();
-    }
+                    }
+
+                */
+
 }

@@ -12,5 +12,6 @@ public class LumExpressUser extends Admin  {
     private String phoneNumber;
     private String password;
     private  String imageUrl;
+    private boolean isEnabled;
 
 }
