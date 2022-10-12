@@ -1,18 +1,21 @@
 package africa.semicolon.lumexpress.data.models;
 
 import africa.semicolon.lumexpress.LumExpressApplication;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Admin extends LumExpressApplication {
+@Builder
+@Getter
+@Setter
+public class Admin extends LumExpressUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String email;
     @ElementCollection
     private Set<Authority> authorities;
 }

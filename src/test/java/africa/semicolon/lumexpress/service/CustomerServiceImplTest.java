@@ -23,7 +23,7 @@ private  CustomerRegistrationRequest request;
          request = CustomerRegistrationRequest
 
           .builder()
-                .email("test@gmail")
+                .email("yilati9582@haizail.com")
                 .password("2234")
                 .country("Nigeria")
 
@@ -39,9 +39,6 @@ private  CustomerRegistrationRequest request;
         assertThat(customerRegistrationResponse.getCode()).isEqualTo(201);
     }
 
-    @Test
-    void login() {
-    }
 
     @Test
     void completeProfile() {

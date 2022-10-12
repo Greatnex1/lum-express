@@ -1,11 +1,8 @@
-package africa.semicolon.lumexpress.service;
+package africa.semicolon.lumexpress.service.notification;
 
-import africa.semicolon.lumexpress.service.notification.EmailDetails;
-import africa.semicolon.lumexpress.service.notification.EmailSender;
+import africa.semicolon.lumexpress.data.dto.request.EmailNotificationRequest;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -15,11 +12,11 @@ import javax.mail.internet.MimeMessage;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class GmailEmailSenderImpl implements EmailSender {
+public class GmailNotificationServiceImpl implements EmailNotificationService {
 
     private final JavaMailSender javaMailSender;
     @Override
-    public String sendEmail(EmailDetails emailDetails) {
+    public String sendEmail(EmailNotificationRequest emailDetails) {
         MimeMessage  mimeMessage = javaMailSender.createMimeMessage();
                 MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
 

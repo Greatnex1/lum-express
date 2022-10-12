@@ -3,5 +3,8 @@ package africa.semicolon.lumexpress.service;
 import africa.semicolon.lumexpress.data.models.VerificationToken;
 
 public interface VerificationTokenService {
-    VerificationToken generateToke();
+
+    VerificationToken createVerificationToken(String  userEmail);
+
+    boolean isValidVerificationToken(String token);
 }

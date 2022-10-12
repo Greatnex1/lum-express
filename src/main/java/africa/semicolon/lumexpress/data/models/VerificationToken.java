@@ -1,6 +1,7 @@
 package africa.semicolon.lumexpress.data.models;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,10 +16,11 @@ import java.time.LocalDateTime;
 public class VerificationToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter(AccessLevel.PRIVATE)
     private Long id;
     private String token;
     private String userEmail;
-    private LocalDateTime createdAt = LocalDateTime.now();
-    private  LocalDateTime expiresAt = createdAt.plusMinutes(10);
+    private LocalDateTime createdAt;
+   private  LocalDateTime expiresAt;
 
 }
