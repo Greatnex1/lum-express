@@ -22,5 +22,6 @@ public class VerificationToken {
     private String userEmail;
     private LocalDateTime createdAt;
    private  LocalDateTime expiresAt;
+ //  private  Customer customerName;
 
 }

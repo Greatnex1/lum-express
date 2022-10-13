@@ -56,16 +56,18 @@ return null;
         Customer savedCustomer = customerRepository.save(customer);
         log.info("customer to be saved in db ::{}", savedCustomer);
         var token= verificationTokenService.createVerificationToken(savedCustomer.getEmail());
-        emailNotificationService.sendEmail(buildEmailNotificationRequest(token));
-        System.out.println(savedCustomer);
+        emailNotificationService.sendEmail(buildEmailNotificationRequest(token,customer.getFirstName()));
+       // System.out.println(savedCustomer);
         return registrationResponseBuilder(savedCustomer);
     }
 
-    private EmailNotificationRequest buildEmailNotificationRequest(VerificationToken  verificationToken) {
-        var email = getEmailTemplate();
+    private EmailNotificationRequest buildEmailNotificationRequest(VerificationToken  verificationToken,String customerName) {
+        var message = getEmailTemplate();
         String mail =  null;
-        if(email !=null){
-            mail = String.format(email, verificationToken.getUserEmail(),"http://localhost:8080/"+ verificationToken.getToken());
+        if(message !=null){
+            mail = String.format(message,customerName,"http://localhost:8080/api/v1/customer/verify" + verificationToken.getToken());
+            log.info("mailed url -> {}", "http://localhost:8080/api/v1/customer/verify" + verificationToken.getToken());
+
         }
 
       return  EmailNotificationRequest
@@ -92,8 +94,9 @@ return null;
 
 
 
+
     @Override
-    public String completeProfile(UpdateCustomerDetails updateCustomerDetails) {
+    public String updateProfile(UpdateCustomerDetails updateCustomerDetails) {
         return null;
     }
 }
